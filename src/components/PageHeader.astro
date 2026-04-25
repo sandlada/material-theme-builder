@@ -1,0 +1,32 @@
+---
+
+---
+
+<header class="page-header">
+    <slot name="start" />
+    <slot name="title" />
+    <slot name="end" />
+</header>
+
+<style is:global>
+    .page-header {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        grid-template-rows: 1fr;
+        height: 56px;
+        align-items: center;
+
+        padding-inline-start: 12px;
+        padding-inline-end: 12px;
+
+        & > [part="title"] {
+            grid-column: 2/3;
+            margin-inline-start: 12px;
+            margin-inline-end: 12px;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 1;
+        }
+    }
+</style>

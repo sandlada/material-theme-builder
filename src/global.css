@@ -1,0 +1,16 @@
+@import "tailwindcss";
+@import "@sandlada/material-design-css/prebuild-color/green.css";
+@import "@sandlada/material-design-css/typography/tailwind-theme.css";
+@import "@sandlada/material-design-css/typography/tailwind-utilities.css";
+
+:root:not([dark]) {
+    color-scheme: light;
+}
+
+:root[dark] {
+    color-scheme: dark;
+}
+
+:root {
+    background: var(--md-sys-color-surface);
+}

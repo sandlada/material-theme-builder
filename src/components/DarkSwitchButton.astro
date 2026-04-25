@@ -1,0 +1,42 @@
+---
+import DS from "@material-design-icons/svg/round/dark_mode.svg?raw";
+import LS from "@material-design-icons/svg/round/light_mode.svg?raw";
+---
+
+<md-icon-button id="switch-theme-icon-button" aria-label="A button to switch between dark and light themes.">
+    <md-icon aria-hidden="true" class="light hidden" set:html={DS} />
+    <md-icon aria-hidden="true" class="dark hidden" set:html={LS} />
+</md-icon-button>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const button = document.querySelector<HTMLElement>(`#switch-theme-icon-button`);
+        const l = button?.querySelector<HTMLElement>(`#switch-theme-icon-button>.light`);
+        const d = button?.querySelector<HTMLElement>(`#switch-theme-icon-button>.dark`);
+
+        if (!button || !l || !d) {
+            return;
+        }
+
+        const updateButtonUI = (isDark: boolean) => {
+            if (isDark) {
+                l.classList.add("hidden");
+                d.classList.remove("hidden");
+            } else {
+                l.classList.remove("hidden");
+                d.classList.add("hidden");
+            }
+        };
+
+        button.addEventListener("click", () => {
+            // @ts-ignore
+            document.dispatchEvent(new Event(!document.isDark ? "color-scheme:change-to-dark-theme" : "color-scheme:change-to-light-theme"));
+            // @ts-ignore
+            updateButtonUI(document.isDark);
+        });
+
+        // Init
+        // @ts-ignore
+        updateButtonUI(document.isDark);
+    });
+</script>
