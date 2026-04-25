@@ -1,0 +1,20 @@
+---
+const language = "en";
+---
+
+<!doctype html>
+<html lang={language}>
+    <head>
+        <meta lang={language} />
+        <meta name="language" content={language} />
+
+        <slot name="before-head" />
+        <slot name="head" />
+        <slot name="after-head" />
+    </head>
+    <body>
+        <slot name="before-body" />
+        <slot name="body" />
+        <slot name="after-body" />
+    </body>
+</html>

@@ -12,6 +12,16 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@material-design-icons/svg": "^0.14.15",
+    "@material/material-color-utilities": "^0.4.0",
+    "@material/web": "^2.4.1",
+    "@sandlada/material-design-css": "^2.3.0-20250927.c",
     "astro": "^6.1.9"
+  },
+  "devDependencies": {
+    "@astrojs/sitemap": "^3.7.2",
+    "@tailwindcss/vite": "^4.2.4",
+    "autoprefixer": "^10.5.0",
+    "tailwindcss": "^4.2.4"
   }
 }

@@ -1,17 +1,643 @@
 ---
+import RootHTML from "../components/RootHTML.astro";
+import PageHeader from "../components/PageHeader.astro";
+import SwitchThemeIconButton from "../components/DarkSwitchButton.astro";
+import PageMeta from "../components/PageMeta.astro";
+import { Variant } from "@material/material-color-utilities";
+import "../global.css";
 
+const Variants = [
+    ["Monochrome", Variant.MONOCHROME],
+    ["Neutral", Variant.NEUTRAL],
+    ["TonalSpot", Variant.TONAL_SPOT, true],
+    ["Vibrant", Variant.VIBRANT],
+    ["Expressive", Variant.EXPRESSIVE],
+    ["Fidelity", Variant.FIDELITY],
+    ["Content", Variant.CONTENT],
+    ["Rainbow", Variant.RAINBOW],
+    ["FruitSalad", Variant.FRUIT_SALAD],
+] as const satisfies ReadonlyArray<readonly [string, Variant, boolean?]>;
+
+const palettes = ["primary", "secondary", "tertiary", "error", "neutral", "neutral-variant"] as const;
+const paletteLevels = [0, 1, 2, 3, 4, 5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 95, 96, 97, 98, 99, 100] as const;
+const paletteBgToColor = {
+    [0]: 95,
+    [1]: 95,
+    [2]: 90,
+    [3]: 90,
+    [4]: 90,
+    [5]: 90,
+    10: 90,
+    20: 90,
+    30: 95,
+    40: 95,
+    50: 100,
+    60: 100,
+    70: 20,
+    80: 20,
+    90: 10,
+    95: 10,
+    96: 10,
+    97: 10,
+    98: 10,
+    99: 5,
+    100: 5,
+} as const;
+
+const tokensToGridItem = [
+    ["primary-palette-key-color", "1 / -1"],
+    ["secondary-palette-key-color", "1 / -1"],
+    ["tertiary-palette-key-color", "1 / -1"],
+    ["neutral-palette-key-color", "1 / -1"],
+    ["neutral-variant-palette-key-color", "1 / -1"],
+    ["background", "span 3 / span 1"],
+    ["on-background", "span 3 / span 1"],
+    ["surface", "span 3 / span 1"],
+    ["on-surface", "span 3 / span 1"],
+    ["surface-variant", "span 3 / span 1"],
+    ["on-surface-variant", "span 3 / span 1"],
+    ["inverse-surface", "span 3 / span 1"],
+    ["inverse-on-surface", "span 3 / span 1"],
+    ["surface-container-lowest", "span 2 / span 1"],
+    ["surface-container-low", "span 2 / span 1"],
+    ["surface-container", "span 4 / span 1"],
+    ["surface-container-high", "span 2 / span 1"],
+    ["surface-container-highest", "span 2 / span 1"],
+    ["outline", "span 6 / span 1"],
+    ["outline-variant", "span 6 / span 1"],
+    ["surface-dim", "span 4 / span 1"],
+    ["surface-bright", "span 4 / span 1"],
+    ["surface-tint", "span 4 / span 1"],
+    ["shadow", "span 6 / span 1"],
+    ["scrim", "span 6 / span 1"],
+    ["primary", "span 3 / span 1"],
+    ["on-primary", "span 3 / span 1"],
+    ["primary-container", "span 2 / span 1"],
+    ["on-primary-container", "span 2 / span 1"],
+    ["inverse-primary", "span 2 / span 1"],
+    ["secondary", "span 3 / span 1"],
+    ["on-secondary", "span 3 / span 1"],
+    ["secondary-container", "span 3 / span 1"],
+    ["on-secondary-container", "span 3 / span 1"],
+    ["tertiary", "span 3 / span 1"],
+    ["on-tertiary", "span 3 / span 1"],
+    ["tertiary-container", "span 3 / span 1"],
+    ["on-tertiary-container", "span 3 / span 1"],
+    ["error", "span 3 / span 1"],
+    ["on-error", "span 3 / span 1"],
+    ["error-container", "span 3 / span 1"],
+    ["on-error-container", "span 3 / span 1"],
+    ["primary-fixed", "span 3 / span 1"],
+    ["primary-fixed-dim", "span 3 / span 1"],
+    ["on-primary-fixed", "span 3 / span 1"],
+    ["on-primary-fixed-variant", "span 3 / span 1"],
+    ["secondary-fixed", "span 3 / span 1"],
+    ["secondary-fixed-dim", "span 3 / span 1"],
+    ["on-secondary-fixed", "span 3 / span 1"],
+    ["on-secondary-fixed-variant", "span 3 / span 1"],
+    ["tertiary-fixed", "span 3 / span 1"],
+    ["tertiary-fixed-dim", "span 3 / span 1"],
+    ["on-tertiary-fixed", "span 3 / span 1"],
+    ["on-tertiary-fixed-variant", "span 3 / span 1"],
+] as const;
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<RootHTML>
+    <PageMeta title="Material Theme Builder | From Sandlada Team" description="With just a few simple parameters, you can quickly build CSS style code for Material Design 3 (including spec versions for 2021 and 2025)." slot="head" />
+
+    <script slot="before-head">
+        if (localStorage.getItem("is-dark") === "true") {
+            // @ts-ignore
+            document.isDark = true;
+            document.documentElement.setAttribute("dark", "");
+        } else {
+            // @ts-ignore
+            document.isDark = false;
+            document.documentElement.removeAttribute("dark");
+        }
+
+        document.addEventListener("color-scheme:change-to-dark-theme", () => {
+            // @ts-ignore
+            document.isDark = true;
+            localStorage.setItem("is-dark", "true");
+            document.documentElement.setAttribute("dark", "");
+        });
+        document.addEventListener("color-scheme:change-to-light-theme", () => {
+            // @ts-ignore
+            document.isDark = false;
+            localStorage.setItem("is-dark", "false");
+            document.documentElement.removeAttribute("dark");
+        });
+    </script>
+
+    <div class="content" slot="body">
+        <PageHeader>
+            <h1 slot="title" part="title" class="title-medium">Material Theme Builder</h1>
+            <SwitchThemeIconButton slot="end" />
+        </PageHeader>
+
+        <div class="theme-control">
+            <form class="picker-panel" id="theme-config-form">
+                <label class="color-picker source-color-picker">
+                    <span class="title">SourceColor</span>
+                    <input name="source-color" id="source-color" value="#69dd71" type="color" />
+                    <md-focus-ring for="source-color"></md-focus-ring>
+                </label>
+                <label class="color-picker palette-picker">
+                    <h3 class="title">Primary</h3>
+                    <md-switch name="enable-primary-palette-option"></md-switch>
+                    <input name="primary-palette" id="primary-palette-color" type="color" />
+                    <md-focus-ring for="primary-palette-color"></md-focus-ring>
+                </label>
+                <label class="color-picker palette-picker">
+                    <h3 class="title">Secondary</h3>
+                    <md-switch name="enable-secondary-palette-option"></md-switch>
+                    <input name="secondary-palette" id="secondary-palette-color" type="color" />
+                    <md-focus-ring for="secondary-palette-color"></md-focus-ring>
+                </label>
+                <label class="color-picker palette-picker">
+                    <h3 class="title">Tertiary</h3>
+                    <md-switch name="enable-tertiary-palette-option"></md-switch>
+                    <input name="tertiary-palette" id="tertiary-palette-color" type="color" />
+                    <md-focus-ring for="tertiary-palette-color"></md-focus-ring>
+                </label>
+                <label class="color-picker palette-picker">
+                    <h3 class="title">Error</h3>
+                    <md-switch name="enable-error-palette-option"></md-switch>
+                    <input name="error-palette" id="error-palette-color" type="color" />
+                    <md-focus-ring for="error-palette-color"></md-focus-ring>
+                </label>
+                <label class="color-picker palette-picker">
+                    <h3 class="title">Neutral</h3>
+                    <md-switch name="enable-neutral-palette-option"></md-switch>
+                    <input name="neutral-palette" id="neutral-palette-color" type="color" />
+                    <md-focus-ring for="neutral-palette-color"></md-focus-ring>
+                </label>
+                <label class="color-picker palette-picker">
+                    <h3 class="title">NeutralVariant</h3>
+                    <md-switch name="enable-neutral-variant-palette-option"></md-switch>
+                    <input name="neutral-variant-palette" id="neutral-variant-palette-color" type="color" />
+                    <md-focus-ring for="neutral-variant-palette-color"></md-focus-ring>
+                </label>
+                <span class="contrast-picker">
+                    <h3 class="title">Contrast Level</h3>
+                    <md-slider name="contrast" type="range" min="-1" max="1" value="0" step="1" ticks labeled></md-slider>
+                </span>
+                <label class="variant-picker">
+                    <h3 class="label-medium">Variant</h3>
+                    <md-outlined-select name="variant">
+                        {
+                            Variants.map(([k, v, d]) => (
+                                <md-select-option value={v} selected={d}>
+                                    <div slot="headline">{k}</div>
+                                </md-select-option>
+                            ))
+                        }
+                    </md-outlined-select>
+                </label>
+                <span class="css-style-mode-picker">
+                    <label>
+                        <md-radio name="css-style-mode" value="class"></md-radio>
+                        <span>Class Style</span>
+                    </label>
+                    <label>
+                        <md-radio name="css-style-mode" value="scheme" checked></md-radio>
+                        <span>Scheme Style</span>
+                    </label>
+                </span>
+                <span class="version-picker">
+                    <label>
+                        <md-radio name="spec-version" value="2021"></md-radio>
+                        <span>2021</span>
+                    </label>
+                    <label>
+                        <md-radio name="spec-version" value="2025" checked></md-radio>
+                        <span>2025</span>
+                    </label>
+                </span>
+            </form>
+
+            <div class="palette-preview" aria-hidden="true">
+                {
+                    palettes.map((palette) => (
+                        <div class="palettes">
+                            {paletteLevels.map((level) => (
+                                <span class="palette label-small" style={`background-color: var(--md-sys-palette-${palette}-${level}); color: var(--md-sys-palette-${palette}-${paletteBgToColor[level]})`}>
+                                    {level}
+                                </span>
+                            ))}
+                        </div>
+                    ))
+                }
+            </div>
+
+            <div class="color-preview">
+                {
+                    tokensToGridItem.map(([bgColor, col]) => (
+                        <span class="token" style={`background-color: var(--_bg, var(--md-sys-color-${bgColor})); grid-column: ${col}`}>
+                            <span class="label">{bgColor}</span>
+                        </span>
+                    ))
+                }
+            </div>
+        </div>
+
+        <div class="code-preview-wrapper">
+            <pre class="code-preview"><code id="code" /></pre>
+        </div>
+
+        <div class="cmps-preview">
+            <md-filled-button>Filled Button</md-filled-button>
+            <md-filled-tonal-button>Filled Tonal Button</md-filled-tonal-button>
+        </div>
+    </div>
+</RootHTML>
+
+<script>
+    import { argbFromHex, Hct, hexFromArgb, TonalPalette, type Variant } from "@material/material-color-utilities";
+    import { MaterialColorService } from "../services/material-color.service";
+    import { MaterialConfigFormService } from "../services/material-config-form.service";
+    import { MaterialPaletteService } from "../services/material-palette.service";
+    import { toKebabCase } from "../utils/to-kebab-case";
+
+    class ThemeController {
+        private constructor() {}
+
+        public static fromPalettesToCSS(
+            palettes: {
+                name: string;
+                palette: {
+                    tone: number;
+                    color: number;
+                }[];
+            }[],
+        ) {
+            return (
+                ":root{" +
+                palettes.reduce((p, c) => {
+                    return p + c.palette.reduce((pp, cc) => pp + `--md-sys-palette-${c.name}-${cc.tone}: ${hexFromArgb(cc.color)};`, "");
+                }, "") +
+                "}"
+            );
+        }
+
+        public static fromColorsToCSS(args: { theme: Record<"light" | "dark", { name: string; hct: Hct; palette: TonalPalette }[]>; cssStyleMode: "class" | "scheme" }) {
+            const { cssStyleMode, theme } = args;
+            const { light, dark } = theme;
+
+            if (cssStyleMode === "class") {
+                const lightCss = light.reduce((p, c) => p + `--md-sys-color-${toKebabCase(c.name)}: ${hexFromArgb(c.hct.toInt())};`, "");
+                const darkCss = dark.reduce((p, c) => p + `--md-sys-color-${toKebabCase(c.name)}: ${hexFromArgb(c.hct.toInt())};`, "");
+                return `:root:not([dark]){${lightCss}}:root[dark]{${darkCss}}`;
+            } else {
+                const lightDarkSchemeMap = new Map<string, [string, string]>([]);
+                light.forEach((c) => {
+                    lightDarkSchemeMap.set(toKebabCase(c.name), [hexFromArgb(c.hct.toInt()).toString(), hexFromArgb(c.hct.toInt()).toString()]);
+                });
+                dark.forEach((c) => {
+                    const lightValue = lightDarkSchemeMap.get(toKebabCase(c.name))![0];
+                    lightDarkSchemeMap.set(toKebabCase(c.name), [lightValue, hexFromArgb(c.hct.toInt()).toString()]);
+                });
+                return `:root{${[...lightDarkSchemeMap.entries()].reduce((p, [k, v]) => p + `--md-sys-color-${k}: light-dark(${v[0]}, ${v[1]});`, "")}}`;
+            }
+        }
+
+        public static updateTheme(style: string) {
+            const sheet = new CSSStyleSheet();
+            sheet.replaceSync(style);
+            document.adoptedStyleSheets = [sheet];
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const form = document.querySelector<HTMLFormElement>(`#theme-config-form`);
+        const codeElement = document.querySelector<HTMLElement>(`.code-preview>#code`);
+
+        let timer: ReturnType<typeof setTimeout> | null = null;
+        form?.addEventListener("input", (_) => {
+            if (timer !== null) {
+                clearTimeout(timer);
+                timer = null;
+            }
+            timer = setTimeout(() => {
+                const config = MaterialConfigFormService.fromForm(form);
+
+                const theme = MaterialColorService.createTheme({
+                    sourceColor: Hct.fromInt(argbFromHex(config.sourceColor)),
+                    contrast: parseInt(config.contrast) as -1 | 0 | 1,
+                    variant: parseInt(config.variant) as Variant,
+                    specVersion: config.specVersion,
+                    palettes: {
+                        primaryPalette: config.primaryPalette ? TonalPalette.fromInt(argbFromHex(config.primaryPalette)) : undefined,
+                        secondaryPalette: config.secondaryPalette ? TonalPalette.fromInt(argbFromHex(config.secondaryPalette)) : undefined,
+                        tertiaryPalette: config.tertiaryPalette ? TonalPalette.fromInt(argbFromHex(config.tertiaryPalette)) : undefined,
+                        errorPalette: config.errorPalette ? TonalPalette.fromInt(argbFromHex(config.errorPalette)) : undefined,
+                        neutralPalette: config.neutralPalette ? TonalPalette.fromInt(argbFromHex(config.neutralPalette)) : undefined,
+                        neutralVariantPalette: config.neutralVariantPalette ? TonalPalette.fromInt(argbFromHex(config.neutralVariantPalette)) : undefined,
+                    },
+                });
+                const tokensCSS = ThemeController.fromColorsToCSS({ theme, cssStyleMode: config.cssStyleMode });
+                const palettes = Object.entries(theme.palettes).map(([key, palette]) => ({
+                    name: key.replace("Palette", ""),
+                    palette: MaterialPaletteService.createPalette({
+                        palette,
+                        tones: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100],
+                    }),
+                }));
+                const palettesCSS = ThemeController.fromPalettesToCSS(palettes);
+
+                const keyColors =
+                    `--md-sys-color-primary-key-color:${hexFromArgb(theme.palettes.primaryPalette.keyColor.toInt())};` +
+                    `--md-sys-color-secondary-key-color:${hexFromArgb(theme.palettes.secondaryPalette.keyColor.toInt())};` +
+                    `--md-sys-color-tertiary-key-color:${hexFromArgb(theme.palettes.tertiaryPalette.keyColor.toInt())};` +
+                    `--md-sys-color-error-key-color:${hexFromArgb(theme.palettes.errorPalette.keyColor.toInt())};` +
+                    `--md-sys-color-neutral-key-color:${hexFromArgb(theme.palettes.neutralPalette.keyColor.toInt())};` +
+                    `--md-sys-color-neutral-variant-key-color:${hexFromArgb(theme.palettes.neutralVariantPalette.keyColor.toInt())};`;
+
+                const allCss = `:root{${keyColors}}` + tokensCSS + palettesCSS;
+
+                ThemeController.updateTheme(allCss);
+
+                if (codeElement) {
+                    codeElement.textContent = allCss.replaceAll("--md", "\n    --md").replaceAll(":root{", "\n:root{").replaceAll("}", "\n}\n");
+                }
+
+                if (timer !== null) {
+                    clearTimeout(timer);
+                    timer = null;
+                }
+            }, 50);
+        });
+
+        form?.dispatchEvent(new InputEvent("input"));
+    });
+</script>
+
+<script>
+    import "@material/web/elevation/elevation.js";
+    import "@material/web/focus/md-focus-ring.js";
+    import "@material/web/icon/icon.js";
+    import "@material/web/elevation/elevation.js";
+    import "@material/web/iconbutton/icon-button.js";
+    import "@material/web/button/filled-button.js";
+    import "@material/web/button/filled-tonal-button.js";
+    import "@material/web/radio/radio.js";
+    import "@material/web/ripple/ripple.js";
+    import "@material/web/select/outlined-select.js";
+    import "@material/web/select/select-option.js";
+    import "@material/web/slider/slider.js";
+    import "@material/web/switch/switch.js";
+</script>
+
+<style is:global>
+    @reference "../global.css";
+
+    .color-picker {
+        position: relative;
+        cursor: pointer;
+        display: inline-flex;
+        flex-direction: column;
+
+        & > input {
+            all: unset;
+            display: flex;
+            height: 48px;
+            width: 48px;
+            position: relative;
+            outline: none;
+            border: none;
+            border-radius: inherit;
+        }
+
+        & > .text {
+            @apply text-body-medium;
+        }
+
+        & > md-focus-ring {
+            --md-focus-ring-shape: 0px;
+        }
+    }
+    .content {
+        min-height: 100svh;
+        padding-inline: 12px;
+        /* padding-block-end: 64px; */
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto auto 1fr;
+        gap: 12px;
+        align-items: start;
+
+        .page-header {
+            grid-row: 1/2;
+            grid-column: 1/-1;
+        }
+
+        .theme-control {
+            grid-row: 2/3;
+            grid-column: 1/-1;
+
+            @media (840px < width) {
+                grid-column: 1/2;
+            }
+        }
+
+        .code-preview-wrapper {
+            grid-row: 3/4;
+            grid-column: 1/-1;
+            @media (840px < width) {
+                grid-row: 2/3;
+                grid-column: 2/3;
+            }
+        }
+    }
+
+    .theme-control {
+        position: relative;
+    }
+
+    .code-preview-wrapper {
+        position: sticky;
+        top: 12px;
+        display: block;
+        box-sizing: border-box;
+        overflow: hidden;
+        margin-block: 0;
+        border: 1px solid var(--md-sys-color-outline-variant);
+        border-radius: 24px;
+        z-index: 1;
+        container-type: scroll-state;
+        container-name: code-preview;
+
+        & > pre {
+            position: static;
+            overflow: auto;
+            max-height: 100%;
+            padding: 24px;
+            border-radius: inherit;
+            height: calc(100svh - 24px - 56px);
+            background-color: var(--md-sys-color-surface-container);
+            transition-property: height, background, box-shadow;
+            transition-duration: 200ms;
+        }
+
+        & > pre > code {
+            display: block;
+            color: var(--md-sys-color-on-surface);
+            font-size: 14px;
+        }
+    }
+    @container code-preview scroll-state(stuck: top) {
+        .code-preview-wrapper > pre {
+            height: calc(100svh - 24px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+            background-color: var(--md-sys-color-surface-container-low);
+        }
+    }
+
+    .picker-panel {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        grid-template-rows: auto;
+
+        & > .source-color-picker,
+        & > .color-picker,
+        & > .palette-picker {
+            & .title {
+                color: var(--md-sys-color-on-surface);
+            }
+            & .desc {
+                color: var(--md-sys-color-on-surface-variant);
+            }
+        }
+
+        & > .source-color-picker {
+            place-self: center;
+            grid-row: 1/2;
+            grid-column: 1/-1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        & > .color-picker:not(.source-color-picker) {
+            grid-column: span 1 / span 1;
+        }
+
+        .contrast-picker {
+            grid-column: 1/3;
+        }
+
+        & > .variant-picker {
+            position: relative;
+            grid-column: 4/-1;
+            place-self: end;
+        }
+
+        & > .palette-picker {
+            grid-column: span 1 / span 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            --md-switch-track-width: 44px;
+            --md-switch-track-height: 28px;
+        }
+
+        .css-style-mode-picker,
+        .version-picker {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: space-evenly;
+            gap: 12px;
+            & > label {
+                display: inline-flex;
+                align-items: center;
+                gap: 4px;
+            }
+        }
+    }
+
+    .palette-preview {
+        display: flex;
+        flex-direction: column;
+
+        & > .palettes {
+            display: grid;
+            grid-template-columns: repeat(21, 1fr);
+            grid-template-rows: 1fr;
+            height: 48px;
+            overflow: auto;
+
+            & > .palette {
+                display: grid;
+                place-content: center;
+            }
+        }
+    }
+
+    .token-preview {
+        display: grid;
+        grid-template-columns: repeat(10, 1fr);
+        grid-template-rows: auto;
+
+        & > .token {
+            cursor: pointer;
+            height: 48px;
+            display: grid;
+            place-content: center;
+            & > .label {
+                display: inline-flex;
+                color: white;
+                /* mix-blend-mode: difference; */
+                position: relative;
+                z-index: 1;
+                &::after {
+                    content: "";
+                    position: absolute;
+                    inset: 0;
+                    background: #000;
+                    z-index: -1;
+                }
+                opacity: 0;
+            }
+
+            &:hover {
+                & > .label {
+                    opacity: 1;
+                }
+            }
+        }
+    }
+
+    .color-preview {
+        display: grid;
+        grid-template-columns: repeat(12, 1fr);
+        gap: 1px;
+
+        .token {
+            @apply body-medium;
+            height: 48px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            transition-property: background, box-shadow;
+            transition-duration: 200ms;
+
+            &:hover {
+                --_bg: white;
+                box-shadow: 0 0 32px 4px white;
+            }
+
+            & > .label {
+                display: flex;
+                align-items: center;
+            }
+        }
+    }
+
+    .cmps-preview {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+    }
+</style>
