@@ -60,7 +60,7 @@ const tokensToGridItem = [
 <div class="color-preview" aria-label="It showcases 49 tokens from Material Design.">
     {
         tokensToGridItem.map(([bgColor, col]) => (
-            <span class="token" style={`background-color: var(--_bg, var(--md-sys-color-${bgColor})); grid-column: ${col}`}>
+            <span class="token" style={`--_bg: var(--md-sys-color-${bgColor});background-color: var(--md-sys-color-${bgColor}); grid-column: ${col}`}>
                 <span class="label body-medium">{bgColor}</span>
             </span>
         ))
@@ -78,13 +78,19 @@ const tokensToGridItem = [
             display: flex;
             justify-content: center;
             align-items: center;
+            cursor: pointer;
 
             transition-property: background, box-shadow;
             transition-duration: 200ms;
 
             &:hover {
-                --_bg: var(--md-sys-color-surface);
-                box-shadow: 0 0 32px 4px var(--md-sys-color-surface);
+                z-index: 1;
+                box-shadow: 0 0 64px 8px var(--_bg);
+
+                & > .label {
+                    background: #000;
+                    color: rgb(255 255 255);
+                }
             }
 
             & > .label {

@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "@sandlada/material-design-css/color/tailwind-theme.css";
 @import "@sandlada/material-design-css/prebuild-color/green.css";
 @import "@sandlada/material-design-css/typography/tailwind-theme.css";
 @import "@sandlada/material-design-css/typography/tailwind-utilities.css";
