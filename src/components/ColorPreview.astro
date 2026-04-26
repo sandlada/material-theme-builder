@@ -1,0 +1,96 @@
+---
+const tokensToGridItem = [
+    ["primary-palette-key-color", "1 / -1"],
+    ["secondary-palette-key-color", "1 / -1"],
+    ["tertiary-palette-key-color", "1 / -1"],
+    ["neutral-palette-key-color", "1 / -1"],
+    ["neutral-variant-palette-key-color", "1 / -1"],
+    ["background", "span 3 / span 1"],
+    ["on-background", "span 3 / span 1"],
+    ["surface", "span 3 / span 1"],
+    ["on-surface", "span 3 / span 1"],
+    ["surface-variant", "span 3 / span 1"],
+    ["on-surface-variant", "span 3 / span 1"],
+    ["inverse-surface", "span 3 / span 1"],
+    ["inverse-on-surface", "span 3 / span 1"],
+    ["surface-container-lowest", "span 2 / span 1"],
+    ["surface-container-low", "span 2 / span 1"],
+    ["surface-container", "span 4 / span 1"],
+    ["surface-container-high", "span 2 / span 1"],
+    ["surface-container-highest", "span 2 / span 1"],
+    ["outline", "span 6 / span 1"],
+    ["outline-variant", "span 6 / span 1"],
+    ["surface-dim", "span 4 / span 1"],
+    ["surface-bright", "span 4 / span 1"],
+    ["surface-tint", "span 4 / span 1"],
+    ["shadow", "span 6 / span 1"],
+    ["scrim", "span 6 / span 1"],
+    ["primary", "span 3 / span 1"],
+    ["on-primary", "span 3 / span 1"],
+    ["primary-container", "span 2 / span 1"],
+    ["on-primary-container", "span 2 / span 1"],
+    ["inverse-primary", "span 2 / span 1"],
+    ["secondary", "span 3 / span 1"],
+    ["on-secondary", "span 3 / span 1"],
+    ["secondary-container", "span 3 / span 1"],
+    ["on-secondary-container", "span 3 / span 1"],
+    ["tertiary", "span 3 / span 1"],
+    ["on-tertiary", "span 3 / span 1"],
+    ["tertiary-container", "span 3 / span 1"],
+    ["on-tertiary-container", "span 3 / span 1"],
+    ["error", "span 3 / span 1"],
+    ["on-error", "span 3 / span 1"],
+    ["error-container", "span 3 / span 1"],
+    ["on-error-container", "span 3 / span 1"],
+    ["primary-fixed", "span 3 / span 1"],
+    ["primary-fixed-dim", "span 3 / span 1"],
+    ["on-primary-fixed", "span 3 / span 1"],
+    ["on-primary-fixed-variant", "span 3 / span 1"],
+    ["secondary-fixed", "span 3 / span 1"],
+    ["secondary-fixed-dim", "span 3 / span 1"],
+    ["on-secondary-fixed", "span 3 / span 1"],
+    ["on-secondary-fixed-variant", "span 3 / span 1"],
+    ["tertiary-fixed", "span 3 / span 1"],
+    ["tertiary-fixed-dim", "span 3 / span 1"],
+    ["on-tertiary-fixed", "span 3 / span 1"],
+    ["on-tertiary-fixed-variant", "span 3 / span 1"],
+] as const;
+---
+
+<div class="color-preview" aria-label="It showcases 49 tokens from Material Design.">
+    {
+        tokensToGridItem.map(([bgColor, col]) => (
+            <span class="token" style={`background-color: var(--_bg, var(--md-sys-color-${bgColor})); grid-column: ${col}`}>
+                <span class="label body-medium">{bgColor}</span>
+            </span>
+        ))
+    }
+</div>
+
+<style>
+    .color-preview {
+        display: grid;
+        grid-template-columns: repeat(12, 1fr);
+        gap: 1px;
+
+        .token {
+            height: 48px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            transition-property: background, box-shadow;
+            transition-duration: 200ms;
+
+            &:hover {
+                --_bg: var(--md-sys-color-surface);
+                box-shadow: 0 0 32px 4px var(--md-sys-color-surface);
+            }
+
+            & > .label {
+                display: flex;
+                align-items: center;
+            }
+        }
+    }
+</style>

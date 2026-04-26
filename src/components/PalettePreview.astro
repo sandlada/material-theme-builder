@@ -1,0 +1,61 @@
+---
+const palettes = ["primary", "secondary", "tertiary", "error", "neutral", "neutral-variant"] as const;
+const paletteLevels = [0, 1, 2, 3, 4, 5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 95, 96, 97, 98, 99, 100] as const;
+const paletteBgToColor = {
+    [0]: 95,
+    [1]: 95,
+    [2]: 90,
+    [3]: 90,
+    [4]: 90,
+    [5]: 90,
+    10: 90,
+    20: 90,
+    30: 95,
+    40: 95,
+    50: 100,
+    60: 100,
+    70: 20,
+    80: 20,
+    90: 10,
+    95: 10,
+    96: 10,
+    97: 10,
+    98: 10,
+    99: 5,
+    100: 5,
+} as const;
+---
+
+<div class="palette-preview" aria-hidden="true" aria-label="It displays the color gradations for each palette in the current color scheme.">
+    {
+        palettes.map((palette) => (
+            <div class="palettes">
+                {paletteLevels.map((level) => (
+                    <span class="palette label-small" style={`background-color: var(--md-sys-palette-${palette}-${level}); color: var(--md-sys-palette-${palette}-${paletteBgToColor[level]})`}>
+                        {level}
+                    </span>
+                ))}
+            </div>
+        ))
+    }
+</div>
+
+<style>
+    .palette-preview {
+        display: flex;
+        flex-direction: column;
+
+        & > .palettes {
+            display: grid;
+            grid-template-columns: repeat(21, 1fr);
+            grid-template-rows: 1fr;
+            height: 48px;
+            overflow: auto;
+
+            & > .palette {
+                display: grid;
+                place-content: center;
+            }
+        }
+    }
+</style>

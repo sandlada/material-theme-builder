@@ -5,6 +5,11 @@ import SwitchThemeIconButton from "../components/DarkSwitchButton.astro";
 import PageMeta from "../components/PageMeta.astro";
 import { Variant } from "@material/material-color-utilities";
 import "../global.css";
+import ComponentPreview from "../components/ComponentPreview.astro";
+import VersionRadioGroup from "../components/VersionRadioGroup.astro";
+import CSSStyleRadioGroup from "../components/CSSStyleRadioGroup.astro";
+import PalettePreview from "../components/PalettePreview.astro";
+import ColorPreview from "../components/ColorPreview.astro";
 
 const Variants = [
     ["Monochrome", Variant.MONOCHROME],
@@ -17,89 +22,6 @@ const Variants = [
     ["Rainbow", Variant.RAINBOW],
     ["FruitSalad", Variant.FRUIT_SALAD],
 ] as const satisfies ReadonlyArray<readonly [string, Variant, boolean?]>;
-
-const palettes = ["primary", "secondary", "tertiary", "error", "neutral", "neutral-variant"] as const;
-const paletteLevels = [0, 1, 2, 3, 4, 5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 95, 96, 97, 98, 99, 100] as const;
-const paletteBgToColor = {
-    [0]: 95,
-    [1]: 95,
-    [2]: 90,
-    [3]: 90,
-    [4]: 90,
-    [5]: 90,
-    10: 90,
-    20: 90,
-    30: 95,
-    40: 95,
-    50: 100,
-    60: 100,
-    70: 20,
-    80: 20,
-    90: 10,
-    95: 10,
-    96: 10,
-    97: 10,
-    98: 10,
-    99: 5,
-    100: 5,
-} as const;
-
-const tokensToGridItem = [
-    ["primary-palette-key-color", "1 / -1"],
-    ["secondary-palette-key-color", "1 / -1"],
-    ["tertiary-palette-key-color", "1 / -1"],
-    ["neutral-palette-key-color", "1 / -1"],
-    ["neutral-variant-palette-key-color", "1 / -1"],
-    ["background", "span 3 / span 1"],
-    ["on-background", "span 3 / span 1"],
-    ["surface", "span 3 / span 1"],
-    ["on-surface", "span 3 / span 1"],
-    ["surface-variant", "span 3 / span 1"],
-    ["on-surface-variant", "span 3 / span 1"],
-    ["inverse-surface", "span 3 / span 1"],
-    ["inverse-on-surface", "span 3 / span 1"],
-    ["surface-container-lowest", "span 2 / span 1"],
-    ["surface-container-low", "span 2 / span 1"],
-    ["surface-container", "span 4 / span 1"],
-    ["surface-container-high", "span 2 / span 1"],
-    ["surface-container-highest", "span 2 / span 1"],
-    ["outline", "span 6 / span 1"],
-    ["outline-variant", "span 6 / span 1"],
-    ["surface-dim", "span 4 / span 1"],
-    ["surface-bright", "span 4 / span 1"],
-    ["surface-tint", "span 4 / span 1"],
-    ["shadow", "span 6 / span 1"],
-    ["scrim", "span 6 / span 1"],
-    ["primary", "span 3 / span 1"],
-    ["on-primary", "span 3 / span 1"],
-    ["primary-container", "span 2 / span 1"],
-    ["on-primary-container", "span 2 / span 1"],
-    ["inverse-primary", "span 2 / span 1"],
-    ["secondary", "span 3 / span 1"],
-    ["on-secondary", "span 3 / span 1"],
-    ["secondary-container", "span 3 / span 1"],
-    ["on-secondary-container", "span 3 / span 1"],
-    ["tertiary", "span 3 / span 1"],
-    ["on-tertiary", "span 3 / span 1"],
-    ["tertiary-container", "span 3 / span 1"],
-    ["on-tertiary-container", "span 3 / span 1"],
-    ["error", "span 3 / span 1"],
-    ["on-error", "span 3 / span 1"],
-    ["error-container", "span 3 / span 1"],
-    ["on-error-container", "span 3 / span 1"],
-    ["primary-fixed", "span 3 / span 1"],
-    ["primary-fixed-dim", "span 3 / span 1"],
-    ["on-primary-fixed", "span 3 / span 1"],
-    ["on-primary-fixed-variant", "span 3 / span 1"],
-    ["secondary-fixed", "span 3 / span 1"],
-    ["secondary-fixed-dim", "span 3 / span 1"],
-    ["on-secondary-fixed", "span 3 / span 1"],
-    ["on-secondary-fixed-variant", "span 3 / span 1"],
-    ["tertiary-fixed", "span 3 / span 1"],
-    ["tertiary-fixed-dim", "span 3 / span 1"],
-    ["on-tertiary-fixed", "span 3 / span 1"],
-    ["on-tertiary-fixed-variant", "span 3 / span 1"],
-] as const;
 ---
 
 <RootHTML>
@@ -136,119 +58,83 @@ const tokensToGridItem = [
             <SwitchThemeIconButton slot="end" />
         </PageHeader>
 
-        <div class="theme-control">
-            <form class="picker-panel" id="theme-config-form">
-                <label class="color-picker source-color-picker">
-                    <span class="title">SourceColor</span>
-                    <input name="source-color" id="source-color" value="#69dd71" type="color" />
-                    <md-focus-ring for="source-color"></md-focus-ring>
-                </label>
-                <label class="color-picker palette-picker">
-                    <h3 class="title">Primary</h3>
-                    <md-switch name="enable-primary-palette-option"></md-switch>
-                    <input name="primary-palette" id="primary-palette-color" type="color" />
-                    <md-focus-ring for="primary-palette-color"></md-focus-ring>
-                </label>
-                <label class="color-picker palette-picker">
-                    <h3 class="title">Secondary</h3>
-                    <md-switch name="enable-secondary-palette-option"></md-switch>
-                    <input name="secondary-palette" id="secondary-palette-color" type="color" />
-                    <md-focus-ring for="secondary-palette-color"></md-focus-ring>
-                </label>
-                <label class="color-picker palette-picker">
-                    <h3 class="title">Tertiary</h3>
-                    <md-switch name="enable-tertiary-palette-option"></md-switch>
-                    <input name="tertiary-palette" id="tertiary-palette-color" type="color" />
-                    <md-focus-ring for="tertiary-palette-color"></md-focus-ring>
-                </label>
-                <label class="color-picker palette-picker">
-                    <h3 class="title">Error</h3>
-                    <md-switch name="enable-error-palette-option"></md-switch>
-                    <input name="error-palette" id="error-palette-color" type="color" />
-                    <md-focus-ring for="error-palette-color"></md-focus-ring>
-                </label>
-                <label class="color-picker palette-picker">
-                    <h3 class="title">Neutral</h3>
-                    <md-switch name="enable-neutral-palette-option"></md-switch>
-                    <input name="neutral-palette" id="neutral-palette-color" type="color" />
-                    <md-focus-ring for="neutral-palette-color"></md-focus-ring>
-                </label>
-                <label class="color-picker palette-picker">
-                    <h3 class="title">NeutralVariant</h3>
-                    <md-switch name="enable-neutral-variant-palette-option"></md-switch>
-                    <input name="neutral-variant-palette" id="neutral-variant-palette-color" type="color" />
-                    <md-focus-ring for="neutral-variant-palette-color"></md-focus-ring>
-                </label>
-                <span class="contrast-picker">
-                    <h3 class="title">Contrast Level</h3>
-                    <md-slider name="contrast" type="range" min="-1" max="1" value="0" step="1" ticks labeled></md-slider>
-                </span>
-                <label class="variant-picker">
-                    <h3 class="label-medium">Variant</h3>
-                    <md-outlined-select name="variant">
-                        {
-                            Variants.map(([k, v, d]) => (
-                                <md-select-option value={v} selected={d}>
-                                    <div slot="headline">{k}</div>
-                                </md-select-option>
-                            ))
-                        }
-                    </md-outlined-select>
-                </label>
-                <span class="css-style-mode-picker">
-                    <label>
-                        <md-radio name="css-style-mode" value="class"></md-radio>
-                        <span>Class Style</span>
+        <div class="left-panel">
+            <div class="theme-control">
+                <form class="picker-panel" id="theme-config-form">
+                    <label class="color-picker source-color-picker">
+                        <span class="title">SourceColor</span>
+                        <input name="source-color" id="source-color" value="#69dd71" type="color" />
+                        <md-focus-ring for="source-color"></md-focus-ring>
                     </label>
-                    <label>
-                        <md-radio name="css-style-mode" value="scheme" checked></md-radio>
-                        <span>Scheme Style</span>
+                    <label class="color-picker palette-picker primary">
+                        <h3 class="title">Primary</h3>
+                        <md-switch name="enable-primary-palette-option"></md-switch>
+                        <input name="primary-palette" id="primary-palette-color" type="color" />
+                        <md-focus-ring for="primary-palette-color"></md-focus-ring>
                     </label>
-                </span>
-                <span class="version-picker">
-                    <label>
-                        <md-radio name="spec-version" value="2021"></md-radio>
-                        <span>2021</span>
+                    <label class="color-picker palette-picker secondary">
+                        <h3 class="title">Secondary</h3>
+                        <md-switch name="enable-secondary-palette-option"></md-switch>
+                        <input name="secondary-palette" id="secondary-palette-color" type="color" />
+                        <md-focus-ring for="secondary-palette-color"></md-focus-ring>
                     </label>
-                    <label>
-                        <md-radio name="spec-version" value="2025" checked></md-radio>
-                        <span>2025</span>
+                    <label class="color-picker palette-picker tertiary">
+                        <h3 class="title">Tertiary</h3>
+                        <md-switch name="enable-tertiary-palette-option"></md-switch>
+                        <input name="tertiary-palette" id="tertiary-palette-color" type="color" />
+                        <md-focus-ring for="tertiary-palette-color"></md-focus-ring>
                     </label>
-                </span>
-            </form>
+                    <label class="color-picker palette-picker error">
+                        <h3 class="title">Error</h3>
+                        <md-switch name="enable-error-palette-option"></md-switch>
+                        <input name="error-palette" id="error-palette-color" type="color" />
+                        <md-focus-ring for="error-palette-color"></md-focus-ring>
+                    </label>
+                    <label class="color-picker palette-picker neutral">
+                        <h3 class="title">Neutral</h3>
+                        <md-switch name="enable-neutral-palette-option"></md-switch>
+                        <input name="neutral-palette" id="neutral-palette-color" type="color" />
+                        <md-focus-ring for="neutral-palette-color"></md-focus-ring>
+                    </label>
+                    <label class="color-picker palette-picker neutral-variant">
+                        <h3 class="title">NeutralVariant</h3>
+                        <md-switch name="enable-neutral-variant-palette-option"></md-switch>
+                        <input name="neutral-variant-palette" id="neutral-variant-palette-color" type="color" />
+                        <md-focus-ring for="neutral-variant-palette-color"></md-focus-ring>
+                    </label>
+                    <span class="contrast-picker">
+                        <h3 class="title">Contrast Level</h3>
+                        <md-slider name="contrast" type="range" min="-1" max="1" value="0" step="1" ticks labeled></md-slider>
+                    </span>
+                    <label class="variant-picker">
+                        <h3 class="label-medium">Variant</h3>
+                        <md-outlined-select name="variant">
+                            {
+                                Variants.map(([k, v, d]) => (
+                                    <md-select-option value={v} selected={d}>
+                                        <div slot="headline">{k}</div>
+                                    </md-select-option>
+                                ))
+                            }
+                        </md-outlined-select>
+                    </label>
 
-            <div class="palette-preview" aria-hidden="true">
-                {
-                    palettes.map((palette) => (
-                        <div class="palettes">
-                            {paletteLevels.map((level) => (
-                                <span class="palette label-small" style={`background-color: var(--md-sys-palette-${palette}-${level}); color: var(--md-sys-palette-${palette}-${paletteBgToColor[level]})`}>
-                                    {level}
-                                </span>
-                            ))}
-                        </div>
-                    ))
-                }
+                    <span class="version-picker">
+                        <VersionRadioGroup />
+                    </span>
+                </form>
             </div>
 
-            <div class="color-preview">
-                {
-                    tokensToGridItem.map(([bgColor, col]) => (
-                        <span class="token" style={`background-color: var(--_bg, var(--md-sys-color-${bgColor})); grid-column: ${col}`}>
-                            <span class="label">{bgColor}</span>
-                        </span>
-                    ))
-                }
-            </div>
+            <PalettePreview />
+            <ColorPreview />
+            <ComponentPreview />
         </div>
 
-        <div class="code-preview-wrapper">
-            <pre class="code-preview"><code id="code" /></pre>
-        </div>
-
-        <div class="cmps-preview">
-            <md-filled-button>Filled Button</md-filled-button>
-            <md-filled-tonal-button>Filled Tonal Button</md-filled-tonal-button>
+        <div class="code-preview-wrapper right-panel">
+            <span class="css-style-mode-picker">
+                <CSSStyleRadioGroup />
+            </span>
+            <pre class="code-preview" id="code-preview" aria-label="The code result."><code id="code" /></pre>
         </div>
     </div>
 </RootHTML>
@@ -256,7 +142,6 @@ const tokensToGridItem = [
 <script>
     import { argbFromHex, Hct, hexFromArgb, TonalPalette, type Variant } from "@material/material-color-utilities";
     import { MaterialColorService } from "../services/material-color.service";
-    import { MaterialConfigFormService } from "../services/material-config-form.service";
     import { MaterialPaletteService } from "../services/material-palette.service";
     import { toKebabCase } from "../utils/to-kebab-case";
 
@@ -281,11 +166,11 @@ const tokensToGridItem = [
             );
         }
 
-        public static fromColorsToCSS(args: { theme: Record<"light" | "dark", { name: string; hct: Hct; palette: TonalPalette }[]>; cssStyleMode: "class" | "scheme" }) {
+        public static fromColorsToCSS(args: { theme: Record<"light" | "dark", { name: string; hct: Hct; palette: TonalPalette }[]>; cssStyleMode: "classic" | "scheme" }) {
             const { cssStyleMode, theme } = args;
             const { light, dark } = theme;
 
-            if (cssStyleMode === "class") {
+            if (cssStyleMode === "classic") {
                 const lightCss = light.reduce((p, c) => p + `--md-sys-color-${toKebabCase(c.name)}: ${hexFromArgb(c.hct.toInt())};`, "");
                 const darkCss = dark.reduce((p, c) => p + `--md-sys-color-${toKebabCase(c.name)}: ${hexFromArgb(c.hct.toInt())};`, "");
                 return `:root:not([dark]){${lightCss}}:root[dark]{${darkCss}}`;
@@ -309,18 +194,38 @@ const tokensToGridItem = [
         }
     }
 
+    function getDataFromForm(formElement: HTMLFormElement) {
+        const data = new FormData(formElement);
+        const config = {
+            contrast: data.get("contrast") as string,
+            variant: data.get("variant") as string,
+            sourceColor: data.get("source-color") as string,
+            primaryPalette: data.get("enable-primary-palette-option") === "on" ? (data.get("primary-palette") as string) : null,
+            secondaryPalette: data.get("enable-secondary-palette-option") === "on" ? (data.get("secondary-palette") as string) : null,
+            tertiaryPalette: data.get("enable-tertiary-palette-option") === "on" ? (data.get("tertiary-palette") as string) : null,
+            errorPalette: data.get("enable-error-palette-option") === "on" ? (data.get("error-palette") as string) : null,
+            neutralPalette: data.get("enable-neutral-palette-option") === "on" ? (data.get("neutral-palette") as string) : null,
+            neutralVariantPalette: data.get("enable-neutral-variant-palette-option") === "on" ? (data.get("neutral-variant-palette") as string) : null,
+            cssStyleMode: (data.get("css-style-mode") as "classic" | "scheme") ?? "scheme",
+            specVersion: (data.get("spec-version") as "2021" | "2025") ?? "2025",
+        };
+        return config;
+    }
+
     document.addEventListener("DOMContentLoaded", () => {
         const form = document.querySelector<HTMLFormElement>(`#theme-config-form`);
-        const codeElement = document.querySelector<HTMLElement>(`.code-preview>#code`);
+        const cssStyleModeRadios = document.querySelectorAll<HTMLInputElement>(`md-radio[name="css-style-mode"]`);
+        const codeElement = document.querySelector<HTMLElement>(`#code-preview>#code`);
 
         let timer: ReturnType<typeof setTimeout> | null = null;
-        form?.addEventListener("input", (_) => {
+        const updateTheme = () => {
             if (timer !== null) {
                 clearTimeout(timer);
                 timer = null;
             }
             timer = setTimeout(() => {
-                const config = MaterialConfigFormService.fromForm(form);
+                if (!form) return;
+                const config = getDataFromForm(form);
 
                 const theme = MaterialColorService.createTheme({
                     sourceColor: Hct.fromInt(argbFromHex(config.sourceColor)),
@@ -354,12 +259,12 @@ const tokensToGridItem = [
                     `--md-sys-color-neutral-key-color:${hexFromArgb(theme.palettes.neutralPalette.keyColor.toInt())};` +
                     `--md-sys-color-neutral-variant-key-color:${hexFromArgb(theme.palettes.neutralVariantPalette.keyColor.toInt())};`;
 
-                const allCss = `:root{${keyColors}}` + tokensCSS + palettesCSS;
+                const allCss = (`:root{${keyColors}}` + tokensCSS + palettesCSS).replaceAll("--md", "\n    --md").replaceAll("neutralVariant", "neutral-variant").replaceAll(":root{", "\n:root{").replaceAll("}", "\n}\n");
 
                 ThemeController.updateTheme(allCss);
 
                 if (codeElement) {
-                    codeElement.textContent = allCss.replaceAll("--md", "\n    --md").replaceAll(":root{", "\n:root{").replaceAll("}", "\n}\n");
+                    codeElement.textContent = allCss;
                 }
 
                 if (timer !== null) {
@@ -367,6 +272,14 @@ const tokensToGridItem = [
                     timer = null;
                 }
             }, 50);
+        };
+
+        form?.addEventListener("input", updateTheme);
+        console.log(cssStyleModeRadios);
+        cssStyleModeRadios.forEach((input) => {
+            input.addEventListener("input", () => {
+                form?.dispatchEvent(new InputEvent("input"));
+            });
         });
 
         form?.dispatchEvent(new InputEvent("input"));
@@ -419,31 +332,34 @@ const tokensToGridItem = [
     }
     .content {
         min-height: 100svh;
+        max-height: 100svh;
+        overflow: clip;
+
         padding-inline: 12px;
-        /* padding-block-end: 64px; */
         display: grid;
         grid-template-columns: 1fr 1fr;
-        grid-template-rows: auto auto 1fr;
-        gap: 12px;
-        align-items: start;
+        grid-template-rows: auto 1fr;
+        gap: 4px;
 
         .page-header {
             grid-row: 1/2;
             grid-column: 1/-1;
         }
 
-        .theme-control {
+        .left-panel {
             grid-row: 2/3;
             grid-column: 1/-1;
+            overflow: auto;
 
             @media (840px < width) {
+                grid-row: 2/3;
                 grid-column: 1/2;
             }
         }
 
-        .code-preview-wrapper {
-            grid-row: 3/4;
-            grid-column: 1/-1;
+        .right-panel {
+            grid-row: span 1;
+            grid-column: span 2;
             @media (840px < width) {
                 grid-row: 2/3;
                 grid-column: 2/3;
@@ -451,31 +367,21 @@ const tokensToGridItem = [
         }
     }
 
-    .theme-control {
-        position: relative;
-    }
-
-    .code-preview-wrapper {
-        position: sticky;
-        top: 12px;
-        display: block;
+    .right-panel.code-preview-wrapper {
+        display: flex;
+        flex-direction: column;
         box-sizing: border-box;
         overflow: hidden;
-        margin-block: 0;
-        border: 1px solid var(--md-sys-color-outline-variant);
-        border-radius: 24px;
         z-index: 1;
-        container-type: scroll-state;
-        container-name: code-preview;
 
         & > pre {
+            border-radius: 24px;
+            border: 1px solid var(--md-sys-color-outline-variant);
             position: static;
             overflow: auto;
-            max-height: 100%;
             padding: 24px;
-            border-radius: inherit;
-            height: calc(100svh - 24px - 56px);
-            background-color: var(--md-sys-color-surface-container);
+            height: calc(100svh - 56px - 48px - 8px);
+            background-color: var(--md-sys-color-surface-container-low);
             transition-property: height, background, box-shadow;
             transition-duration: 200ms;
         }
@@ -485,19 +391,26 @@ const tokensToGridItem = [
             color: var(--md-sys-color-on-surface);
             font-size: 14px;
         }
-    }
-    @container code-preview scroll-state(stuck: top) {
-        .code-preview-wrapper > pre {
-            height: calc(100svh - 24px);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
-            background-color: var(--md-sys-color-surface-container-low);
+
+        & > .css-style-mode-picker {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            justify-content: space-evenly;
+            height: 48px;
         }
+    }
+
+    .left-panel {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
     }
 
     .picker-panel {
         display: grid;
         grid-template-columns: repeat(6, 1fr);
-        grid-template-rows: auto;
+        grid-template-rows: repeat(5, 1fr);
 
         & > .source-color-picker,
         & > .color-picker,
@@ -505,36 +418,36 @@ const tokensToGridItem = [
             & .title {
                 color: var(--md-sys-color-on-surface);
             }
-            & .desc {
-                color: var(--md-sys-color-on-surface-variant);
-            }
+        }
+
+        & > .color-picker.palette-picker:is(.primary, .secondary, .tertiary) {
+            grid-column: span 2;
+        }
+        & > .color-picker.palette-picker:is(.error, .neutral, .neutral-variant) {
+            grid-column: span 2;
         }
 
         & > .source-color-picker {
-            place-self: center;
-            grid-row: 1/2;
-            grid-column: 1/-1;
             display: flex;
             flex-direction: column;
             align-items: center;
+            grid-row: 1/2;
+            grid-column: 1/-1;
         }
 
-        & > .color-picker:not(.source-color-picker) {
-            grid-column: span 1 / span 1;
-        }
-
-        .contrast-picker {
-            grid-column: 1/3;
+        & > .contrast-picker {
+            grid-column: span 3;
+            align-self: center;
+            justify-self: center;
         }
 
         & > .variant-picker {
-            position: relative;
-            grid-column: 4/-1;
-            place-self: end;
+            grid-column: span 3;
+            align-self: center;
+            justify-self: center;
         }
 
         & > .palette-picker {
-            grid-column: span 1 / span 1;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -542,7 +455,6 @@ const tokensToGridItem = [
             --md-switch-track-height: 28px;
         }
 
-        .css-style-mode-picker,
         .version-picker {
             grid-column: 1 / -1;
             display: flex;
@@ -554,90 +466,5 @@ const tokensToGridItem = [
                 gap: 4px;
             }
         }
-    }
-
-    .palette-preview {
-        display: flex;
-        flex-direction: column;
-
-        & > .palettes {
-            display: grid;
-            grid-template-columns: repeat(21, 1fr);
-            grid-template-rows: 1fr;
-            height: 48px;
-            overflow: auto;
-
-            & > .palette {
-                display: grid;
-                place-content: center;
-            }
-        }
-    }
-
-    .token-preview {
-        display: grid;
-        grid-template-columns: repeat(10, 1fr);
-        grid-template-rows: auto;
-
-        & > .token {
-            cursor: pointer;
-            height: 48px;
-            display: grid;
-            place-content: center;
-            & > .label {
-                display: inline-flex;
-                color: white;
-                /* mix-blend-mode: difference; */
-                position: relative;
-                z-index: 1;
-                &::after {
-                    content: "";
-                    position: absolute;
-                    inset: 0;
-                    background: #000;
-                    z-index: -1;
-                }
-                opacity: 0;
-            }
-
-            &:hover {
-                & > .label {
-                    opacity: 1;
-                }
-            }
-        }
-    }
-
-    .color-preview {
-        display: grid;
-        grid-template-columns: repeat(12, 1fr);
-        gap: 1px;
-
-        .token {
-            @apply body-medium;
-            height: 48px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-
-            transition-property: background, box-shadow;
-            transition-duration: 200ms;
-
-            &:hover {
-                --_bg: white;
-                box-shadow: 0 0 32px 4px white;
-            }
-
-            & > .label {
-                display: flex;
-                align-items: center;
-            }
-        }
-    }
-
-    .cmps-preview {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 16px;
     }
 </style>
