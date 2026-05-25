@@ -42,11 +42,17 @@ export class MaterialColorService {
             hct: Hct;
             palette: TonalPalette;
         }[] =>
-            scheme.colors.allColors.map((color) => ({
-                name: color.name,
-                hct: color.getHct(scheme),
-                palette: color.palette(scheme),
-            }));
+            [
+                ...scheme.colors.allColors.map((color) => ({
+                    name: color.name,
+                    hct: color.getHct(scheme),
+                    palette: color.palette(scheme),
+                })),
+                ({name: scheme.colors.scrim.name, hct: scheme.colors.scrim().getHct(scheme), palette: scheme.colors.scrim().palette(scheme)}),
+                ({name: scheme.colors.shadow.name, hct: scheme.colors.shadow().getHct(scheme), palette: scheme.colors.shadow().palette(scheme)}),
+                ({name: scheme.colors.surfaceTint.name, hct: scheme.colors.surfaceTint().getHct(scheme), palette: scheme.colors.surfaceTint().palette(scheme)}),
+                ({name: scheme.colors.surfaceVariant.name, hct: scheme.colors.surfaceVariant().getHct(scheme), palette: scheme.colors.surfaceVariant().palette(scheme)}),
+            ].sort((a, b) => a.name.localeCompare(b.name));
 
         return {
             light: toResult(lightScheme),
