@@ -1,5 +1,5 @@
 {
-  "name": "",
+  "name": "com.sandlada.material-theme-builder",
   "type": "module",
   "version": "0.0.1",
   "engines": {
@@ -15,13 +15,13 @@
     "@material-design-icons/svg": "^0.14.15",
     "@material/material-color-utilities": "^0.4.0",
     "@material/web": "^2.4.1",
-    "@sandlada/material-design-css": "^2.3.0-20250927.c",
-    "astro": "^6.1.9"
+    "@sandlada/material-design-css": "^3.0.0-20260608.b",
+    "astro": "^6.4.4"
   },
   "devDependencies": {
-    "@astrojs/sitemap": "^3.7.2",
-    "@tailwindcss/vite": "^4.2.4",
+    "@astrojs/sitemap": "^3.7.3",
+    "@tailwindcss/vite": "^4.3.0",
     "autoprefixer": "^10.5.0",
-    "tailwindcss": "^4.2.4"
+    "tailwindcss": "^4.3.0"
   }
 }
